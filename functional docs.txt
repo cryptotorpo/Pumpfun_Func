@@ -1,0 +1,104 @@
+All features of smart contracts are distinguished by op code which takes 32 bits of body of message towards smart contracts from outside.
+
+- Pump Fun
+Op Code: 0x09867157 ;; It has one external method - create_token() to launch a new token by user with customized statistics.
+This takes parameters from msg_body by following order and type for each parameters.
+
+Query Id: uint, 64
+OwnerAddress: Address
+ReserveRatio: uint, 32 (Custom token reserve ratio vs. TON)
+name: bits, 128 (token name)
+symbol: bits, 64 (token name)
+
+
+
+
+- Dex Minter
+1. Op Code: 0x7bdd97de ;; Function to remove liquidity which was already deposited by user
+
+Query Id: uint, 64
+Jetton Amount: coins
+From Address: Address
+
+2. Op Code: 25 ;; Function to swap pair tokens where TON is included in from token
+
+Query Id: uint, 64
+Ton Amount to Swap: coins
+Min out amount: coins
+
+3. Op Code: 0x7362d09c ;; Transfer categorized functions that are including swap and add liquidity functions by sub op codes
+
+Query Id: uint, 64
+Jetton Amount: coins
+Jetton Sender: address
+flag: uint, 1 ;; If it is equal to -1, then pass fails
+
+1) Sub Op (32 bits): 22 ;; Function to add liquidity with TON token of specified amount
+Slippage: uint, 32
+Ton liquidity: grams
+
+2) Sub Op (32 bits): 24 ;; Function to swap pair tokens where TON is included in to token
+Min token amount out: grams
+
+4. Op Code: 26 ;; Admin role function to upgrade any specific part if any error is discovered later
+Code: ref
+
+
+
+
+- Dex Wallet
+1. Op Code: 0xf8a7ea5 ;; Outgoing transfer function to send swapped token to recipient
+Query Id: uint, 64
+Jetton amount: coins
+Recipient address: address
+Response address: address ;; Hook address that received notification after transfer is done
+Custom payload: dict
+Forward ton amount: coins
+
+2. Op Code: 0x178d4519 ;; Incoming transfer function to receive in-token
+Query Id: uint, 64
+Jetton amount: coins
+From address: address
+Response address: address
+Forward ton amount: coins
+
+3. Op Code: 0x595f07bc ;; Burn function
+Queryy Id: uint, 64
+Jetton amount: coins
+Response address: address
+
+
+
+
+- Jetton Minter
+Custom token utility smart contract
+1. Op Code: 21 ;; Function to mint itself token with specified amount with owner address
+Query Id: uint, 64
+Owner address: address
+amount: coins
+Master message: ref ;; Reference of what is containing jetton amount
+   -- Skipping bits for op and query id: 96
+   -- Jetton amount: coins
+   -- From address: address
+   -- Response address: address
+   -- Forward amount coins
+   -- Forward payload: uint, 1
+
+2. Op Code: 0x7bdd97de ;; Function to burn tokens of specified amount
+Query Id: uint, 64
+Jetton amount: coins
+Owner address: address
+amount: coins
+Response address: address
+
+3. Op Code: 3 ;; Change admin of token
+New admin address: address
+
+4. Op Code: 4 ;; Change code content of token to fix future mistakes
+New code reference: ref
+
+
+
+Those are all external functions which are necessary for frontend.
+While making test scripts of them, it did take some efforts to build basic duplicating smart contract providers with Blueprint sdk core methods which are newly upgraded in latest versions and to sync parameter types inside of them to smart contract methods.
+You are able to check those scripts are working before integration.

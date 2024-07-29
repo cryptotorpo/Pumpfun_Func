@@ -1,0 +1,35 @@
+{-
+    ton-pump-fun op codes
+-}
+
+int op::transfer() asm "0xf8a7ea5 PUSHINT";
+int op::transfer_notification() asm "0x7362d09c PUSHINT";
+int op::internal_transfer() asm "0x178d4519 PUSHINT";
+int op::excesses() asm "0xd53276db PUSHINT";
+int op::burn() asm "0x595f07bc PUSHINT";
+int op::burn_notification() asm "0x7bdd97de PUSHINT";
+
+;; Minter
+int op::mint() asm "21 PUSHINT";
+;; Buy
+int op::buy() asm "22 PUSHINT";
+
+const OP_TRANSFER = 0xf8a7ea5;
+const OP_TRANSFER_NOTIFICATION = 0x7362d09c;
+const OP_INTERNAL_TRANSFER = 0x178d4519;
+const OP_EXCESSES = 0xd53276db;  ;;excesses
+const OP_BURN = 0x595f07bc;
+const OP_BURN_NOTIFICAITON = 0x7bdd97de;
+
+;; Minter
+const OP_MINT = 21;
+
+const ERROR::WRONG_JETTON_SENDER_ADDRESS = 74;
+const ERROR::INSFUCIENT_FUNDS = 600;
+const ERROR::ZERO_RESERVES = 601;
+const ERROR::NULL_JETTON_WALLET = 602;
+const ERROR::MSG_VALUE_INSUFFICIENT = 603;
+const ERROR::WRONG_JETTON_WALLET = 604;
+const ERROR::SWAP_TON_NO_GAS = 605;
+const ERROR::QUOTE_BAD_AMOUNT = 606;
+const ERROR::QUOTE_BAD_RESERVES = 607;
